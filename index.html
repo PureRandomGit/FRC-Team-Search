@@ -5,19 +5,151 @@
   <title>FRC Team Search</title>
   <style>
     * { box-sizing: border-box; }
-    body { font-family: Arial, sans-serif; margin: 2em; background: #f7f7f7; color: #333; }
-
-    h1 { margin-bottom: 0.5em; }
-    .controls { display: flex; gap: 1em; align-items: flex-end; margin-bottom: 1em; }
-    .controls label { display: flex; flex-direction: column; font-size: 0.9em; }
-    .controls input, .controls select, .controls button {
-      padding: 0.5em; font-size: 1em; margin-top: 0.25em;
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 2em; 
+      background: white; 
+      color: black; 
     }
 
-    #go { background: #ee4c23; color: white; border: none; border-radius: 4px; cursor: pointer; }
-    #go:hover { background: #bd3c1c; }
-    details { margin-bottom: 1em; }
-    summary { font-weight: bold; cursor: pointer; }
+    h1 { 
+      margin-bottom: 0.5em; 
+      text-align: center; 
+    }
+
+    .controls { 
+      display: flex; 
+      gap: 1em; 
+      align-items: flex-end; 
+      justify-content: center; 
+      margin-bottom: 1em; 
+    }
+
+    .controls label { 
+      display: flex; 
+      flex-direction: column; 
+      font-size: 0.9em; 
+    }
+
+    .controls input, .controls select, .controls button {
+      padding: 0.5em; 
+      font-size: 1em; 
+      margin-top: 0.25em; 
+      border: 1px solid #444; 
+      border-radius: 4px; 
+      background: white; 
+      color: black; 
+    }
+
+    #go { 
+      background: #ee4c23; 
+      color: white; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer; 
+    }
+
+    #go:hover { 
+      background: #bd3c1c; 
+    }
+
+    /* Year selector styles */
+    .year-dropdown {
+      position: relative;
+      min-width: 160px;
+    }
+
+    .year-dropdown-btn {
+      width: 100%;
+      padding: 0.5em;
+      font-size: 1em;
+      text-align: left;
+      background: white;
+      border: 1px solid #444;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .year-dropdown-btn:after {
+      content: '▼';
+      font-size: 0.8em;
+      margin-left: 5px;
+    }
+
+    .year-dropdown-btn:hover {
+      background-color: #f8f8f8;
+    }
+
+    .year-dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: white;
+      min-width: 240px;
+      max-height: 300px;
+      overflow-y: auto;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1000;
+      border-radius: 4px;
+      padding: 10px;
+    }
+
+    .year-dropdown-content.show {
+      display: block;
+    }
+
+    .year-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .year-item {
+      display: flex;
+      align-items: center;
+      padding: 5px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .year-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .year-item input {
+      margin-right: 5px;
+      accent-color: #ee4c23;
+    }
+
+    .year-actions {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0 5px 0;
+      border-top: 1px solid #eee;
+      margin-top: 10px;
+      font-size: 0.85em;
+    }
+
+    .year-actions span {
+      cursor: pointer;
+      color: #ee4c23;
+    }
+
+    .year-actions span:hover {
+      text-decoration: underline;
+    }
+
+    details { 
+      margin-bottom: 1em; 
+    }
+
+    summary { 
+      font-weight: bold; 
+      cursor: pointer; 
+    }
+
     .inner-controls {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -25,11 +157,34 @@
       margin-top: 0.5em;
     }
 
-    .checkbox-group { display: flex; flex-direction: column; font-size: 1em;}
-    .checkbox-group label { flex-direction: row; align-items: center; margin-bottom: 0.5em; font-size: 1em;}
-    .checkbox-group input { margin-right: 0.5em; margin-top: 0; }
-    .checkbox-group span { margin-right: 0.5em; margin-bottom: 10px;font-size: 1.2em; }
-    #results { margin-top: 1em; }
+    .checkbox-group { 
+      display: flex; 
+      flex-direction: column; 
+      font-size: 1em;
+    }
+
+    .checkbox-group label { 
+      flex-direction: row; 
+      align-items: center; 
+      margin-bottom: 0.5em; 
+      font-size: 1em;
+    }
+
+    .checkbox-group input { 
+      margin-right: 0.5em; 
+      margin-top: 0; 
+    }
+
+    .checkbox-group span { 
+      margin-right: 0.5em; 
+      margin-bottom: 10px; 
+      font-size: 1.2em; 
+    }
+
+    #results { 
+      margin-top: 1em; 
+    }
+
     .checkbox-group input[type="checkbox"] {
       accent-color: #ee4c23;
     }
@@ -37,15 +192,11 @@
     input[type="number"], input[type="text"], select {
       padding: 0.5em;
       font-size: 1em;
-      border: 1px solid #ccc;
+      border: 1px solid #444;
       border-radius: 4px;
-      background: #f9f9f9;
+      background: white;
+      color: black;
       transition: border-color 0.1s, box-shadow 0.1s;
-    }
-    
-    /* Fix for number inputs */
-    input[type="number"] {
-      width: 80px;
     }
 
     input[type="number"]:focus, input[type="text"]:focus, select:focus {
@@ -55,47 +206,93 @@
     }    
 
     table {
-      width: 100%; border-collapse: collapse; background: white; border-radius: 4px; overflow: hidden;
+      width: 100%; 
+      border-collapse: collapse; 
+      background: white; 
+      border-radius: 4px; 
+      overflow: hidden;
       margin-top: 0.5em;
     }
+
     th, td {
-      padding: 0.75em; text-align: left; border-bottom: 1px solid #e0e0e0;
+      padding: 0.75em; 
+      text-align: left; 
+      border-bottom: 1px solid #333;
     }
+
     th {
-      background: #ee4c23; color: white; text-transform: uppercase; font-size: 0.85em;
+      background: #ee4c23; 
+      color: white; 
+      text-transform: uppercase; 
+      font-size: 0.85em;
       white-space: nowrap;
     }
-    tr:hover td { background-color: rgba(0, 0, 0, 0.1); }
-    @media (max-width: 600px) {
-      th, td { padding: 0.5em; font-size: 0.9em; }
+
+    tr:hover td { 
+      background-color: rgba(0, 0, 0, 0.1); 
     }
-    .bottom-controls { display: flex; justify-content: flex-end; margin-top: 0.5em; }
-    
-    /* New styles for the table format */
-    .user-alliance { font-weight: bold; }
-    .winning-score { font-weight: bold; }
-    .win-row { background-color: rgba(0, 200, 0, 0.1); } /* Light green for wins */
-    .loss-row { background-color: rgba(255, 0, 0, 0.1); } /* Light red for losses */
-    .searched-team { font-weight: bold; }
-    
-    /* Make rows clickable */
+
+    @media (max-width: 600px) {
+      th, td { 
+        padding: 0.5em; 
+        font-size: 0.9em; 
+      }
+    }
+
+    .bottom-controls { 
+      display: flex; 
+      justify-content: flex-end; 
+      margin-top: 0.5em; 
+    }
+
+    .user-alliance { 
+      font-weight: bold; 
+    }
+
+    .winning-score { 
+      font-weight: bold; 
+    }
+
+    .win-row { 
+      background-color: rgba(0, 200, 0, 0.1); 
+    }
+
+    .loss-row { 
+      background-color: rgba(255, 0, 0, 0.1); 
+    }
+
+    .searched-team { 
+      font-weight: bold; 
+    }
+
     tbody tr {
       cursor: pointer;
       transition: background-color 0.2s;
     }
+
     tbody tr:hover {
-      /* background-color: rgba(0, 0, 0, 0.0); */
+      background-color: rgba(255, 255, 255, 0.1);
     }
   </style>
 </head>
 <body>
   <h1>FRC Team Search</h1>
 
-  <!-- Always visible controls -->
   <div class="controls">
-    <label>Year
-      <input type="number" id="year" min="2008" max="2099">
-    </label>
+    <div class="year-dropdown">
+      <button id="yearDropdownBtn" class="year-dropdown-btn">Select Years</button>
+      <div id="yearDropdownContent" class="year-dropdown-content">
+        <div id="yearGrid" class="year-grid">
+          <!-- Year checkboxes will be inserted here by JavaScript -->
+        </div>
+        <div class="year-actions">
+          <span id="selectAllYears">Select All</span>
+          <span id="selectCurrentYear">Current Year</span>
+          <span id="clearYears">Clear All</span>
+        </div>
+      </div>
+    </div>
+    
     <label>Team Key
       <input type="text" id="teamKey" placeholder="e.g. 1902 or frc1902">
     </label>
@@ -146,7 +343,6 @@
     </div>
   </details>
 
-  <!-- Results and bottom control -->
   <div id="results"></div>
   <div class="bottom-controls">
     <label># of Matches
@@ -159,17 +355,128 @@
   
     // Caches
     let cachedTeamKey = '';
-    let cachedYear = 0;
+    let cachedYears = [];
     let cachedEventKey = '';
     let cachedMatches = [];
     let cachedDetails = {};
   
-    // Default year
-    document.getElementById('year').value = new Date().getFullYear();
+    // Year dropdown functionality
+    const yearDropdownBtn = document.getElementById('yearDropdownBtn');
+    const yearDropdownContent = document.getElementById('yearDropdownContent');
+    
+    yearDropdownBtn.addEventListener('click', function() {
+      yearDropdownContent.classList.toggle('show');
+    });
+    
+    // Close the dropdown when clicking outside of it
+    window.addEventListener('click', function(event) {
+      if (!event.target.matches('.year-dropdown-btn') && !yearDropdownContent.contains(event.target)) {
+        yearDropdownContent.classList.remove('show');
+      }
+    });
+    
+    // Generate year options (from 2008 to current year)
+    function populateYearOptions() {
+      const yearGrid = document.getElementById('yearGrid');
+      const currentYear = new Date().getFullYear();
+      const startYear = 2008; // FRC API has data from 2008 onwards
+      
+      // Clear existing content
+      yearGrid.innerHTML = '';
+      
+      // Create checkboxes for each year, in descending order
+      for (let year = currentYear; year >= startYear; year--) {
+        const yearItem = document.createElement('div');
+        yearItem.className = 'year-item';
+        
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.className = 'year-checkbox';
+        input.id = `year-${year}`;
+        input.value = year;
+        input.checked = (year === currentYear);
+        
+        const label = document.createElement('label');
+        label.htmlFor = `year-${year}`;
+        label.textContent = year;
+        
+        yearItem.appendChild(input);
+        yearItem.appendChild(label);
+        yearGrid.appendChild(yearItem);
+        
+        // Add click event to the div for better UX
+        yearItem.addEventListener('click', (e) => {
+          if (e.target !== input) {
+            input.checked = !input.checked;
+            updateYearButtonText();
+          }
+        });
+        
+        // Update button text when checkbox changes
+        input.addEventListener('change', updateYearButtonText);
+      }
+      
+      // Initial button text update
+      updateYearButtonText();
+    }
+    
+    function updateYearButtonText() {
+      const selectedYears = Array.from(document.querySelectorAll('.year-checkbox:checked'))
+                               .map(cb => parseInt(cb.value))
+                               .sort();
+      
+      if (selectedYears.length === 0) {
+        yearDropdownBtn.textContent = 'Select Years';
+      } else if (selectedYears.length === 1) {
+        yearDropdownBtn.textContent = selectedYears[0];
+      } else {
+        const currentYear = new Date().getFullYear();
+        
+        // See if it's a continuous range
+        const isRange = selectedYears.length === (selectedYears[selectedYears.length-1] - selectedYears[0] + 1);
+        
+        if (isRange) {
+          yearDropdownBtn.textContent = `${selectedYears[0]} - ${selectedYears[selectedYears.length-1]}`;
+        } else if (selectedYears.length === (currentYear - 2008 + 1)) {
+          yearDropdownBtn.textContent = 'All Years';
+        } else {
+          yearDropdownBtn.textContent = `${selectedYears.length} Years Selected`;
+        }
+      }
+    }
+    
+    // Initialize year options
+    populateYearOptions();
+    
+    // Year selection actions
+    document.getElementById('selectAllYears').addEventListener('click', () => {
+      document.querySelectorAll('.year-checkbox').forEach(cb => cb.checked = true);
+      updateYearButtonText();
+    });
+    
+    document.getElementById('clearYears').addEventListener('click', () => {
+      document.querySelectorAll('.year-checkbox').forEach(cb => cb.checked = false);
+      updateYearButtonText();
+    });
+    
+    document.getElementById('selectCurrentYear').addEventListener('click', () => {
+      const currentYear = new Date().getFullYear();
+      document.querySelectorAll('.year-checkbox').forEach(cb => {
+        cb.checked = (parseInt(cb.value) === currentYear);
+      });
+      updateYearButtonText();
+    });
   
     document.getElementById('go').addEventListener('click', async () => {
       // Read & normalize inputs
-      const year = +document.getElementById('year').value;
+      const selectedYears = Array.from(document.querySelectorAll('.year-checkbox:checked'))
+                                 .map(cb => parseInt(cb.value))
+                                 .sort();
+      
+      if (selectedYears.length === 0) {
+        return alert('Please select at least one year');
+      }
+      
       let teamKey = document.getElementById('teamKey').value.trim();
       let eventKey = document.getElementById('eventKey').value.trim();
       const compLevels = Array.from(document.querySelectorAll('.compLevel'))
@@ -185,7 +492,6 @@
       const searchedTeam = teamKey.replace('frc', '');
   
       // Validation & normalization
-      if (!year || year < 2008) return alert('Enter a valid year ≥ 2008');
       if (/^\d+$/.test(teamKey)) teamKey = 'frc' + teamKey;
       if (!/^frc\d+$/.test(teamKey)) return alert('Enter a valid team key');
   
@@ -193,11 +499,6 @@
         ? { val: v.slice(1), exclude: true }
         : { val: v, exclude: false };
       let eK = parseNeg(eventKey), oT = parseNeg(oppTeam), aT = parseNeg(allyTeam);
-      
-      // Fix event key format
-      if (eK.val && !eK.val.startsWith(year.toString())) {
-        eK.val = year + eK.val;
-      }
       
       [oT, aT].forEach(x => {
         if (x.val && /^\d+$/.test(x.val)) x.val = 'frc' + x.val;
@@ -207,25 +508,44 @@
       resEl.innerHTML = '<p>Loading…</p>';
   
       try {
-        // Decide if we need a fresh match list
-        const needNewList = (
-          teamKey !== cachedTeamKey ||
-          year !== cachedYear ||
-          (eK.val && !eK.exclude) !== cachedEventKey
-        );
-  
-        if (needNewList) {
+        // Determine if we need to fetch new data
+        const needNewFetch = 
+          teamKey !== cachedTeamKey || 
+          !arraysEqual(selectedYears, cachedYears) ||
+          (eK.val && !eK.exclude && !cachedEventKey.includes(eK.val));
+        
+        if (needNewFetch) {
           cachedTeamKey = teamKey;
-          cachedYear = year;
-          cachedEventKey = eK.val && !eK.exclude ? eK.val : '';
+          cachedYears = [...selectedYears];
           cachedMatches = [];
           cachedDetails = {};
-  
-          let url = `${PROXY_BASE}/team/${teamKey}/matches/${year}`;
-          if (eK.val && !eK.exclude) url += `/${eK.val}`;
-          const mRes = await fetch(url);
-          if (!mRes.ok) throw new Error(`Matches error: ${mRes.status}`);
-          cachedMatches = await mRes.json();
+          
+          // Fetch matches for each selected year
+          const allMatches = await Promise.all(selectedYears.map(async (year) => {
+            let url = `${PROXY_BASE}/team/${teamKey}/matches/${year}`;
+            
+            // If event key is specified and includes the year, filter for that specific year
+            if (eK.val && !eK.exclude && eK.val.startsWith(year.toString())) {
+              url += `/${eK.val}`;
+            }
+            
+            const mRes = await fetch(url);
+            if (!mRes.ok) throw new Error(`Matches error for ${year}: ${mRes.status}`);
+            const matches = await mRes.json();
+            
+            // Add year to cachedEventKeys if an event key is specified
+            if (eK.val && !eK.exclude && eK.val.startsWith(year.toString())) {
+              if (!cachedEventKey) {
+                cachedEventKey = [];
+              }
+              cachedEventKey.push(eK.val);
+            }
+            
+            return matches;
+          }));
+          
+          // Combine all matches
+          cachedMatches = allMatches.flat();
         }
   
         // Fetch missing details
@@ -248,9 +568,11 @@
           const isBlue = m.alliances.blue.team_keys.includes(teamKey);
           const userSide = isBlue ? 'blue' : 'red';
           const oppSide = isBlue ? 'red' : 'blue';
+          const year = parseInt(m.key.substring(0, 4));
           
           return {
             key: m.key,
+            year: year,
             round: `${m.comp_level.toUpperCase()} ${m.match_number}`,
             comp_level: m.comp_level,
             userSide: userSide,
@@ -265,9 +587,19 @@
           };
         })
         .filter(m => {
+          // Event key filter logic
           if (!eK.val) return true;
           const evt = m.key.split('_')[0];
-          return eK.exclude ? evt !== eK.val : evt === eK.val;
+          // If event key has year prefix, exact match
+          if (eK.val.match(/^\d{4}/)) {
+            return eK.exclude ? evt !== eK.val : evt === eK.val;
+          } 
+          // Otherwise, match event code for any selected year
+          else {
+            return eK.exclude 
+              ? !selectedYears.some(y => evt === `${y}${eK.val}`)
+              : selectedYears.some(y => evt === `${y}${eK.val}`);
+          }
         })
         .filter(m => compLevels.includes(m.comp_level))
         .filter(m => allianceColor === 'both' || m.userSide === allianceColor)
@@ -308,8 +640,8 @@
           const eventCode = m.key.split('_')[0];
           const regionalCode = eventCode.substring(4); // Remove year prefix
           
-          // Format the match link text
-          const matchLinkText = `${regionalCode.toUpperCase()} ${m.round}`;
+          // Format the match link text - now including year
+          const matchLinkText = `${m.year} ${regionalCode.toUpperCase()} ${m.round}`;
           
           // Bold only the searched team number in each alliance
           const formattedRedTeams = m.redTeams.map(team => 
@@ -353,6 +685,15 @@
         resEl.innerHTML = `<p style="color:red;">${err.message}</p>`;
       }
     });
+    
+    // Helper function to compare arrays
+    function arraysEqual(a, b) {
+      if (a.length !== b.length) return false;
+      for (let i = 0; i < a.length; i++) {
+        if (a[i] !== b[i]) return false;
+      }
+      return true;
+    }
   </script>
 </body>
 </html>
